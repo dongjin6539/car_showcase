@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Listbox, Transition } from "@headlessui/react";
+
 import { CustomFilterProps } from "@/types";
 import { updateSearchParams } from "@/utils";
 
@@ -27,7 +28,7 @@ const CustomFilter = ({ title, options, setFilter }: CustomFilterProps) => {
                             width={20}
                             height={20}
                             className="ml-4 object-contain"
-                            alt="chevron up down"
+                            alt="chevron_up-down"
                         />
                     </Listbox.Button>
                     <Transition
@@ -40,7 +41,6 @@ const CustomFilter = ({ title, options, setFilter }: CustomFilterProps) => {
                             {options.map((option) => (
                                 <Listbox.Option
                                     key={option.title}
-                                    value={option}
                                     className={({ active }) =>
                                         `relative cursor-default select-none py-2 px-4 ${
                                             active
@@ -48,17 +48,20 @@ const CustomFilter = ({ title, options, setFilter }: CustomFilterProps) => {
                                                 : "text-gray-900"
                                         }`
                                     }
+                                    value={option}
                                 >
-                                    {(selected) => (
-                                        <span
-                                            className={`block truncate ${
-                                                selected
-                                                    ? "font-medium"
-                                                    : "font-normal"
-                                            }`}
-                                        >
-                                            {option.title}
-                                        </span>
+                                    {({ selected }) => (
+                                        <>
+                                            <span
+                                                className={`block truncate ${
+                                                    selected
+                                                        ? "font-medium"
+                                                        : "font-normal"
+                                                }`}
+                                            >
+                                                {option.title}
+                                            </span>
+                                        </>
                                     )}
                                 </Listbox.Option>
                             ))}

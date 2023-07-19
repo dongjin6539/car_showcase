@@ -1,73 +1,121 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { SearchManufacturer } from "./";
+import { CarCard, CustomFilter, Hero, SearchBar, ShowMore } from "@/components";
+import { fetchCars } from "@/utils";
+import { fuels, yearsOfProduction } from "@/constants";
 import Image from "next/image";
+import { CarProps } from "@/types";
 
-const SearchButton = ({ otherClassese }: { otherClassese: string }) => {
-    return (
-        <button type="submit" className={`-ml-3 z-10 ${otherClassese}`}>
-            <Image
-                src="/magnifying-glass.svg"
-                alt="magnifying glass"
-                width={40}
-                height={40}
-                className="object-contain"
-            />
-        </button>
-    );
-};
+export default function Home() {
+    const [allCars, setAllCars] = useState<CarProps[]>([]);
+    const [loading, setLoading] = useState(false);
 
-const SearchBar = ({ setManufacturer, setModel }) => {
-    const [searchManufacturer, setSearchManufacturer] = useState("");
+    // search states
+    const [manufacturer, setManufacturer] = useState("");
+    const [model, setModel] = useState("");
 
-    const [searchModel, setSearchModel] = useState("");
+    // filter states
+    const [fuel, setFuel] = useState("");
+    const [year, setYear] = useState<string>("2022");
 
-    const router = useRouter();
+    // pagination states
+    const [limit, setLimit] = useState(10);
 
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const getCars = async () => {
+        setLoading(true);
 
-        if (searchManufacturer === "" && searchModel === "") {
-            return alert("Please fill in the search bar");
+        try {
+            const result = await fetchCars({
+                manufacturer: manufacturer || "",
+                year: parseInt(year) || 2022,
+                fuel: fuel || "",
+                limit: limit || 10,
+                model: model || "",
+            });
+
+            setAllCars(result);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
-
-        setModel(searchModel);
-        setManufacturer(searchManufacturer);
     };
 
-    return (
-        <form action="" className="searchbar" onSubmit={handleSearch}>
-            <div className="searchbar__item">
-                <SearchManufacturer
-                    selected={searchManufacturer}
-                    setSelected={setSearchManufacturer}
-                />
-                <SearchButton otherClassese="sm:hidden" />
-            </div>
-            <div className="searchbar__item">
-                <Image
-                    src="/model-icon.png"
-                    width={25}
-                    height={25}
-                    className="absolute w-[20px] h-[20px] ml-4"
-                    alt="car model"
-                />
-                <input
-                    type="text"
-                    name="model"
-                    value={searchModel}
-                    onChange={(e) => setSearchModel(e.target.value)}
-                    placeholder="Tiguan"
-                    className="searchbar__input"
-                />
-                <SearchButton otherClassese="sm:hidden" />
-            </div>
-            <SearchButton otherClassese="max-sm:hidden" />
-        </form>
-    );
-};
+    useEffect(() => {
+        console.log(fuel, year, limit, manufacturer, model);
+        getCars();
+    }, [fuel, year, limit, manufacturer, model]);
 
-export default SearchBar;
+    const isDataEmpty =
+        !Array.isArray(allCars) || allCars.length < 1 || !allCars;
+
+    return (
+        <main className="overflow-hidden">
+            <Hero />
+
+            <div className="mt-12 padding-x padding-y max-width" id="discover">
+                <div className="home__text-container">
+                    <h1 className="text-4xl font-extrabold">Car Catalogue</h1>
+                    <p>Explore out cars you might like</p>
+                </div>
+
+                <div className="home__filters">
+                    <SearchBar
+                        setManufacturer={setManufacturer}
+                        setModel={setModel}
+                    />
+
+                    <div className="home__filter-container">
+                        <CustomFilter
+                            title="fuel"
+                            options={fuels}
+                            setFilter={setFuel}
+                        />
+                        <CustomFilter
+                            title="year"
+                            options={yearsOfProduction}
+                            setFilter={setYear}
+                        />
+                    </div>
+                </div>
+
+                {allCars.length > 0 ? (
+                    <section>
+                        <div className="home__cars-wrapper">
+                            {allCars?.map((car) => (
+                                <CarCard car={car} />
+                            ))}
+                        </div>
+
+                        {loading && (
+                            <div className="mt-16 w-full flex-center">
+                                <Image
+                                    src="/loader.svg"
+                                    alt="loader"
+                                    width={50}
+                                    height={50}
+                                    className="object-contain"
+                                />
+                            </div>
+                        )}
+
+                        <ShowMore
+                            pageNumber={limit / 10}
+                            isNext={limit > allCars.length}
+                            setLimit={setLimit}
+                        />
+                    </section>
+                ) : (
+                    <div className="home__error-container">
+                        <h2 className="text-black text-xl font-bold">
+                            Oops, no results
+                        </h2>
+                        {allCars.length === 0 && <p>No cars found.</p>}
+                    </div>
+                )}
+            </div>
+        </main>
+    );
+}
