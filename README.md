@@ -3,7 +3,7 @@
 RapidAPI의 "Cars by API-Ninjas" API에서 제공하는 자동차 카탈로그를 검색할 수 있습니다.
 제조업체, 모델, 연료 등과 같은 여러 기준에 따라 자동차를 필터링할 수 있습니다.
 
-<!-- ![image](https://github.com/seolhee313/cars_showcase/assets/125417882/bc28e469-7663-4ce2-add4-6ea594c97ed6) -->
+![image](https://github.com/dongjin6539/cars_showcase/assets/125417882/bc28e469-7663-4ce2-add4-6ea594c97ed6)
 
 -   Live Demo :
 -   작업 기간 : 3일
@@ -32,7 +32,7 @@ RapidAPI의 "Cars by API-Ninjas" API에서 제공하는 자동차 카탈로그�
 
 ## Screenshots
 
-<!-- ![Example screenshot](https://i.ibb.co/w01Tx1t/carshowcase.jpg) -->
+![Example screenshot](https://i.ibb.co/w01Tx1t/carshowcase.jpg)
 
 ## 학습
 
@@ -48,7 +48,7 @@ RapidAPI의 "Cars by API-Ninjas" API에서 제공하는 자동차 카탈로그�
 
 ## 개발 환경 프로젝트 실행 방법 (Cars API 요청)
 
-1. **레포지토리 클론 :** `git clone https://github.com/seolhee313/cars_showcase.git`
+1. **레포지토리 클론 :** `git clone https://github.com/dongjin6539/cars_showcase.git`
 2. **종속성 설치 :** `npm install`
 3. **환경 변수 세팅 :** `NEXT_PUBLIC_RAPID_API_KEY` 입력 ([ API-Ninjas ](https://api-ninjas.com/api/cars)에서 API Key 발급 필요)
 4. **프로젝트 시작 :** `npm run dev`
