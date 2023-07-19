@@ -1,121 +1,75 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { CarCard, CustomFilter, Hero, SearchBar, ShowMore } from "@/components";
-import { fetchCars } from "@/utils";
-import { fuels, yearsOfProduction } from "@/constants";
 import Image from "next/image";
-import { CarProps } from "@/types";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Home() {
-    const [allCars, setAllCars] = useState<CarProps[]>([]);
-    const [loading, setLoading] = useState(false);
+import SearchManufacturer from "./SearchManufacturer";
 
-    // search states
-    const [manufacturer, setManufacturer] = useState("");
-    const [model, setModel] = useState("");
+interface SearchBarProps {
+    setManufacturer: (manufacturer: string) => void;
+    setModel: (model: string) => void;
+}
 
-    // filter states
-    const [fuel, setFuel] = useState("");
-    const [year, setYear] = useState<string>("2022");
+const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
+    <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
+        <Image
+            src={"/magnifying-glass.svg"}
+            alt={"magnifying glass"}
+            width={40}
+            height={40}
+            className="object-contain"
+        />
+    </button>
+);
 
-    // pagination states
-    const [limit, setLimit] = useState(10);
+const SearchBar: React.FC<SearchBarProps> = ({ setManufacturer, setModel }) => {
+    const [searchManufacturer, setSearchManufacturer] = useState("");
+    const [searchModel, setSearchModel] = useState("");
 
-    const getCars = async () => {
-        setLoading(true);
+    const router = useRouter();
 
-        try {
-            const result = await fetchCars({
-                manufacturer: manufacturer || "",
-                year: parseInt(year) || 2022,
-                fuel: fuel || "",
-                limit: limit || 10,
-                model: model || "",
-            });
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-            setAllCars(result);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
+        if (searchManufacturer.trim() === "" && searchModel.trim() === "") {
+            return alert("Please provide some input");
         }
+
+        setModel(searchModel);
+        setManufacturer(searchManufacturer);
     };
 
-    useEffect(() => {
-        console.log(fuel, year, limit, manufacturer, model);
-        getCars();
-    }, [fuel, year, limit, manufacturer, model]);
-
-    const isDataEmpty =
-        !Array.isArray(allCars) || allCars.length < 1 || !allCars;
-
     return (
-        <main className="overflow-hidden">
-            <Hero />
-
-            <div className="mt-12 padding-x padding-y max-width" id="discover">
-                <div className="home__text-container">
-                    <h1 className="text-4xl font-extrabold">Car Catalogue</h1>
-                    <p>Explore out cars you might like</p>
-                </div>
-
-                <div className="home__filters">
-                    <SearchBar
-                        setManufacturer={setManufacturer}
-                        setModel={setModel}
-                    />
-
-                    <div className="home__filter-container">
-                        <CustomFilter
-                            title="fuel"
-                            options={fuels}
-                            setFilter={setFuel}
-                        />
-                        <CustomFilter
-                            title="year"
-                            options={yearsOfProduction}
-                            setFilter={setYear}
-                        />
-                    </div>
-                </div>
-
-                {allCars.length > 0 ? (
-                    <section>
-                        <div className="home__cars-wrapper">
-                            {allCars?.map((car) => (
-                                <CarCard car={car} />
-                            ))}
-                        </div>
-
-                        {loading && (
-                            <div className="mt-16 w-full flex-center">
-                                <Image
-                                    src="/loader.svg"
-                                    alt="loader"
-                                    width={50}
-                                    height={50}
-                                    className="object-contain"
-                                />
-                            </div>
-                        )}
-
-                        <ShowMore
-                            pageNumber={limit / 10}
-                            isNext={limit > allCars.length}
-                            setLimit={setLimit}
-                        />
-                    </section>
-                ) : (
-                    <div className="home__error-container">
-                        <h2 className="text-black text-xl font-bold">
-                            Oops, no results
-                        </h2>
-                        {allCars.length === 0 && <p>No cars found.</p>}
-                    </div>
-                )}
+        <form className="searchbar" onSubmit={handleSearch}>
+            <div className="searchbar__item">
+                <SearchManufacturer
+                    selected={searchManufacturer}
+                    setSelected={setSearchManufacturer}
+                />
+                <SearchButton otherClasses="sm:hidden" />
             </div>
-        </main>
+            <div className="searchbar__item">
+                <Image
+                    src="/model-icon.png"
+                    width={25}
+                    height={25}
+                    className="absolute w-[20px] h-[20px] ml-4"
+                    alt="car model"
+                />
+                <input
+                    type="text"
+                    name="model"
+                    value={searchModel}
+                    onChange={(e) => setSearchModel(e.target.value)}
+                    placeholder="Tiguan"
+                    className="searchbar__input"
+                />
+                <SearchButton otherClasses="sm:hidden" />
+            </div>
+            <SearchButton otherClasses="max-sm:hidden" />
+        </form>
     );
-}
+};
+
+export default SearchBar;

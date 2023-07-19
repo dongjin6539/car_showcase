@@ -23,7 +23,7 @@ const CustomButton = ({
                 <div className="relative w-6 h-6">
                     <Image
                         src={rightIcon}
-                        alt="right icon"
+                        alt="arrow_left"
                         fill
                         className="object-contain"
                     />

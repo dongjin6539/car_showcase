@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { Fragment } from "react";
+import Image from "next/image";
 
 import { Dialog, Transition } from "@headlessui/react";
-
 import { CarProps } from "@/types";
 import { generateCarImageUrl } from "@/utils";
 
@@ -28,7 +27,7 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <div className="fixed inset-0 bg-black bg-opacity-25"></div>
+                        <div className="fixed inset-0 bg-black bg-opacity-25" />
                     </Transition.Child>
 
                     <div className="fixed inset-0 overflow-y-auto">
@@ -38,7 +37,7 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                                 enter="ease-out duration-300"
                                 enterFrom="opacity-0 scale-95"
                                 enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
+                                leave="ease-out duration-300"
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
@@ -53,11 +52,11 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                                             alt="close"
                                             width={20}
                                             height={20}
-                                            className="obect-contain"
+                                            className="object-contain"
                                         />
                                     </button>
 
-                                    <div className="flex-1 flex-col gap-3">
+                                    <div className="flex-1 flex flex-col gap-3">
                                         <div className="relative w-full h-40 bg-pattern bg-cover bg-center rounded-lg">
                                             <Image
                                                 src={generateCarImageUrl(car)}
@@ -67,6 +66,7 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                                                 className="object-contain"
                                             />
                                         </div>
+
                                         <div className="flex gap-3">
                                             <div className="flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg">
                                                 <Image
