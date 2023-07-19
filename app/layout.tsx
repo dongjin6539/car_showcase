@@ -1,7 +1,7 @@
 import { Footer, Navbar } from "@/components";
 import "./globals.css";
 
-export const metadat = {
+export const metadata = {
     title: "Car Hub",
     description: "Discover the best cars in the world",
 };
@@ -12,7 +12,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="ko">
+        <html lang="en">
             <body className="relative">
                 <Navbar />
                 {children}
